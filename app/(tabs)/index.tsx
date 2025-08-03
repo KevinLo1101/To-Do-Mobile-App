@@ -1,29 +1,31 @@
-import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from "react-native";
-export default function Index() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome Back</Text>
-      <Link href='/about' style={styles.button}>
-        GO TO About Screen
-      </Link>
-    </View>
-  );
+import { SQLiteProvider, type SQLiteDatabase } from "expo-sqlite";
+import { Main } from './app';
+export default function index(){
+    return (
+        <SQLiteProvider databaseName="db.db" onInit={migrateDbIfNeeded}>
+            <Main />
+        </SQLiteProvider>
+    )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex:1,
-    backgroundColor: '#25292e',
-    alignItems:'center',
-    justifyContent: 'center',
-  },
-  text:{
-    color:'#fff'
-  },
-   button: {
-    fontSize: 20,
-    textDecorationLine: 'underline',
-    color: '#fff',
-  }, 
-})
+async function migrateDbIfNeeded(db: SQLiteDatabase) {
+      const DATABASE_VERSION = 1;
+      let { user_version: currentDbVersion } = await db.getFirstAsync<{
+        user_version: number;
+      }>('PRAGMA user_version');
+      if (currentDbVersion >= DATABASE_VERSION) {
+        return;
+      }
+      if (currentDbVersion === 0) {
+        await db.execAsync(`
+            PRAGMA journal_mode = 'wal';
+            CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY NOT NULL, done INT, value TEXT, date TEXT);
+            `);
+        currentDbVersion = 1;
+      }
+      // if (currentDbVersion === 1) {
+      //   Add more migrations
+      // }
+      await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
+    }
+    

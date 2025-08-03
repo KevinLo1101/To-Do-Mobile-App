@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "tasks-app",
-    "slug": "tasks-app",
+    "name": "Tasks-app",
+    "slug": "Tasks-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "tasksapp",
+    "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.Tasks-app"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +26,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-sqlite",
       [
         "expo-splash-screen",
         {
@@ -33,6 +35,14 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-font",
+          {
+            "fonts": [
+              "./assets/fonts/Chewy-Regular.tff"
+            ]
+          }
       ]
     ],
     "experiments": {
